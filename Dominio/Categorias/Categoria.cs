@@ -1,0 +1,32 @@
+﻿using Blog.Dominio.Bases;
+
+namespace Blog.Dominio.Categorias
+{
+    public class Categoria : Identificador
+    {
+        public Categoria(string descricao)
+        {
+            AlterarDescricao(descricao);
+
+            Id = Guid.NewGuid();
+            Ativo = true;
+            DataCriacao = DateTime.Now;
+            DATAULTIMAALTERACAO = DateTime.Now;
+        }
+
+        public bool Ativo { get; private set; }
+        public string? Descricao { get; private set; }
+        public DateTime DataCriacao { get; private set; }
+        public DateTime DATAULTIMAALTERACAO { get; private set; }
+        public void Ativar() => Ativo = true;
+        public void Inativar() => Ativo = false;
+
+        public void AlterarDescricao(string descricao)
+        {
+            if (descricao.Trim() == "")
+                throw new Exception("Informe uma descrição para a categoria!");
+
+            Descricao = descricao;
+        }
+    }
+}
