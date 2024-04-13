@@ -18,6 +18,11 @@ namespace Blog.Repositorio.Noticias
             return await DbSet.ToListAsync();
         }
 
+        public async Task<IEnumerable<Noticia>> GetIncludingCategoria()
+        {
+            return await DbSet.Include(p => p.Categoria).ToListAsync();
+        }
+
         public async Task<Noticia> Get(Guid id)
         {
             var noticia = await DbSet.FirstOrDefaultAsync(p => p.Id == id);

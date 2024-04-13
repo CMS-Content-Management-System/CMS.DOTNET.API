@@ -21,7 +21,7 @@ namespace Blog.Controllers.Noticias
         {
             try
             {
-                var noticia = await _rep.Get();
+                var noticia = await _rep.GetIncludingCategoria();
 
                 return Ok(noticia);
             }

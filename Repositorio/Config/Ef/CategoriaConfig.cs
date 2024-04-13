@@ -30,6 +30,11 @@ namespace Blog.Repositorio.Config.Ef
             builder.Property(x => x.DataCriacao)
                 .HasColumnName("DATACRIACAO")
                 .IsRequired();
+            
+            builder.HasMany(e => e.Noticias)
+                       .WithOne(e => e.Categoria)
+                       .HasForeignKey(e => e.CodigoCategoria)
+                       .HasPrincipalKey(e => e.Id);
         }
     }
 }

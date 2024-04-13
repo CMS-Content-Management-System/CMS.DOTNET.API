@@ -12,7 +12,7 @@ namespace Blog.Repositorio.Config.Ef
             builder.ToTable("NOTICIA");
 
             builder.HasKey(x => x.Id);
-
+ 
             builder.Property(x => x.Id)
                 .HasColumnName("IDNOTICIA")
                 .IsRequired()
@@ -56,9 +56,9 @@ namespace Blog.Repositorio.Config.Ef
                 .HasForeignKey(x => x.CodigoAutor)
                 .IsRequired();
 
-            builder.HasOne(x => x.Categoria)
-                .WithMany()
-                .HasForeignKey(x => x.CodigoCategoria)
+            builder.HasOne(e => e.Categoria)
+                .WithMany(e => e.Noticias)
+                .HasForeignKey(e => e.CodigoCategoria)
                 .IsRequired();
         }
     }

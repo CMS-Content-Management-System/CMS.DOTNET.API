@@ -1,11 +1,13 @@
 ﻿using Blog.Dominio.Bases;
+using Blog.Dominio.Noticias;
+using System.Text.Json.Serialization;
 
 namespace Blog.Dominio.Categorias
 {
     public class Categoria : Identificador
     {
         public Categoria(string descricao)
-        {
+        {           
             AlterarDescricao(descricao);
 
             Id = Guid.NewGuid();
@@ -20,6 +22,9 @@ namespace Blog.Dominio.Categorias
         public DateTime DATAULTIMAALTERACAO { get; private set; }
         public void Ativar() => Ativo = true;
         public void Inativar() => Ativo = false;
+
+        [JsonIgnore]
+        public ICollection<Noticia> Noticias { get; set; }
 
         public void AlterarDescricao(string descricao)
         {

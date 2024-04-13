@@ -9,6 +9,7 @@ namespace Blog.Dominio.Noticias
         void Add(Noticia pais);
         Task<IEnumerable<Noticia>> Get();
         Task<Noticia> Get(Guid id);
+        Task<IEnumerable<Noticia>> GetIncludingCategoria();
         Task Delete(Guid id);
         Task<bool> Save();
         bool ExisteNoticiaDaCategoria(Categoria categoria);
