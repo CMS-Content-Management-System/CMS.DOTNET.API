@@ -13,7 +13,7 @@ namespace Blog.Dominio.Noticias
 
         public Noticia(string titulo, string conteudo, string imagem, int prioridade, Usuario autor, Categoria categoria)
         {
-  /*          Id = Guid.NewGuid();
+            Id = Guid.NewGuid();
             DataCriacao = DateTime.Now;
             Ativo = true;
             Prioridade = prioridade;
@@ -23,7 +23,7 @@ namespace Blog.Dominio.Noticias
             CodigoAutor = autor.Id;
             Autor = autor;
             CodigoCategoria = categoria.Id;
-            Categoria = categoria;*/
+            Categoria = categoria;
         }
 
         public bool Ativo { get; private set; }
