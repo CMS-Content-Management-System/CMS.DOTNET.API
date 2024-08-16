@@ -10,13 +10,14 @@ namespace ApiBlog.Dominio.Noticias
         {
         }
 
-        public Noticia(string titulo, string conteudo, string imagem, int prioridade, Usuario autor, Categoria categoria)
+        public Noticia(string titulo, string subTitulo, string conteudo, string imagem, int prioridade, Usuario autor, Categoria categoria)
         {
             Id = Guid.NewGuid();
             DataCriacao = DateTime.Now;
             Ativo = true;
             Prioridade = prioridade;
             AlterarTitulo(titulo);
+            AlterarSubTitulo(subTitulo);
             AlterarConteudo(conteudo);
             Imagem = imagem;
             CodigoAutor = autor.Id;
@@ -27,6 +28,7 @@ namespace ApiBlog.Dominio.Noticias
 
         public bool Ativo { get; private set; }
         public string Titulo { get; private set; }
+        public string SubTitulo { get; private set; }
         public string Conteudo { get; private set; }
         public string Imagem { get; private set; }
         public int Prioridade { get; private set; }
@@ -58,9 +60,17 @@ namespace ApiBlog.Dominio.Noticias
             Conteudo = conteudo;
         }
 
-        public void AlterarDados(string titulo, string conteudo, string imagem, int prioridade, Usuario autor, Categoria categoria)
+        public void AlterarSubTitulo(string subTitulo) {
+            if (subTitulo.Trim() == "")
+                throw new Exception("Informe um subtítulo para notícia!");
+
+            SubTitulo = subTitulo;
+        }
+
+        public void AlterarDados(string titulo, string subTitulo, string conteudo, string imagem, int prioridade, Usuario autor, Categoria categoria)
         {
             AlterarTitulo(titulo);
+            AlterarSubTitulo(subTitulo);
             AlterarConteudo(conteudo);
             Prioridade = prioridade;
             Imagem = imagem;
