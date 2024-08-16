@@ -183,6 +183,7 @@ namespace ApiBlog.Controllers.Admin
     public class NoticiaDto
     {
         public string Titulo { get; set; }
+        public string SubTitulo { get; set; }
         public string Conteudo { get; set; }
         public string Imagem { get; set; }
         public int Prioridade { get; set; }
