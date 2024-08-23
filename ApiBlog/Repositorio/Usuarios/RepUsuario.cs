@@ -1,4 +1,5 @@
-﻿using ApiBlog.Dominio.Usuarios;
+﻿using ApiBlog.Dominio.Bases;
+using ApiBlog.Dominio.Usuarios;
 using ApiBlog.Dominio.Usuarios.View;
 using ApiBlog.Repositorio.Bases;
 using Microsoft.EntityFrameworkCore;
@@ -17,8 +18,26 @@ namespace ApiBlog.Repositorio.Usuarios
             return await DbSet.ToListAsync();
         }
 
-        public async Task<IEnumerable<UsuarioView>> GetView()
+        public async Task<IEnumerable<UsuarioView>> GetView(QueryParams queryParams = null)
         {
+            if (queryParams == null)
+            {
+                queryParams = new QueryParams
+                {
+                    Pagina = 1,
+                    Limite = 10
+                };
+            }
+
+            if (queryParams.Pagina < 1)
+                queryParams.Pagina = 1;
+
+            if (queryParams.Limite < 1)
+                queryParams.Limite = 10;
+
+            if (queryParams.Limite > 10)
+                queryParams.Limite = 10;
+
             return await DbSet.Select(x => new UsuarioView
             {
                 Id = x.Id,
@@ -28,7 +47,9 @@ namespace ApiBlog.Repositorio.Usuarios
                 Email = x.Email,
                 Admin = x.Admin,
                 FotoPerfil = x.FotoPerfil
-            }).ToListAsync();
+            }).Skip((queryParams.Pagina - 1) * queryParams.Limite)
+              .Take(queryParams.Limite)
+              .ToListAsync();
         }
 
         public async Task<Usuario> RecuperarUsuarioLogin(string email, string senha)

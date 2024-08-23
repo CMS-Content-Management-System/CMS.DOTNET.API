@@ -13,7 +13,7 @@ namespace ApiBlog.Dominio.Usuarios
         bool VerificarSeEmailJaCadastrado(string email);
         bool VerificarSeEmailJaCadastradoParaOutroUsuario(Usuario usuario);
         bool ExistemOutrosUsuarios(Usuario usuario);
-        Task<IEnumerable<UsuarioView>> GetView();
+        Task<IEnumerable<UsuarioView>> GetView(QueryParams queryParams = null);
         Task<UsuarioView> GetView(Guid id);
         Task<Usuario> RecuperarUsuarioLogin(string email, string senha);
     }

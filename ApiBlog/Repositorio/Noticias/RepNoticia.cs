@@ -1,4 +1,5 @@
-﻿using ApiBlog.Dominio.Categorias;
+﻿using ApiBlog.Dominio.Bases;
+using ApiBlog.Dominio.Categorias;
 using ApiBlog.Dominio.Categorias.View;
 using ApiBlog.Dominio.Noticias;
 using ApiBlog.Dominio.Noticias.View;
@@ -21,8 +22,26 @@ namespace ApiBlog.Repositorio.Noticias
             return await DbSet.ToListAsync();
         }
 
-        public async Task<IEnumerable<NoticiaView>> GetView()
+        public async Task<IEnumerable<NoticiaView>> GetView(QueryParams queryParams = null)
         {
+            if (queryParams == null)
+            {
+                queryParams = new QueryParams
+                {
+                    Pagina = 1,
+                    Limite = 10
+                };
+            }
+
+            if (queryParams.Pagina < 1)
+                queryParams.Pagina = 1;
+
+            if (queryParams.Limite < 1)
+                queryParams.Limite = 10;
+
+            if (queryParams.Limite > 10)
+                queryParams.Limite = 10;
+
             return await DbSet.Select(x => new NoticiaView
             {
                 Id = x.Id,
@@ -49,7 +68,9 @@ namespace ApiBlog.Repositorio.Noticias
                     Ativo = x.Categoria.Ativo,
                     Descricao = x.Categoria.Descricao
                 }
-            }).ToListAsync();
+            }).Skip((queryParams.Pagina - 1) * queryParams.Limite)
+              .Take(queryParams.Limite)
+              .ToListAsync();
         }
 
         public async Task<Noticia> Get(Guid id)

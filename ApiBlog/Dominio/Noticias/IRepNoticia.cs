@@ -14,7 +14,7 @@ namespace ApiBlog.Dominio.Noticias
         Task<bool> Save();
         bool ExisteNoticiaDaCategoria(Categoria categoria);
         bool ExisteNoticiaDoAutor(Usuario autor);
-        Task<IEnumerable<NoticiaView>> GetView();
+        Task<IEnumerable<NoticiaView>> GetView(QueryParams queryParams = null);
         Task<NoticiaView> GetView(Guid id);
     }
 }

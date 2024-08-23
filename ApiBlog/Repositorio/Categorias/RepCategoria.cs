@@ -1,4 +1,5 @@
-﻿using ApiBlog.Dominio.Categorias;
+﻿using ApiBlog.Dominio.Bases;
+using ApiBlog.Dominio.Categorias;
 using ApiBlog.Dominio.Categorias.View;
 using ApiBlog.Repositorio.Bases;
 using Microsoft.EntityFrameworkCore;
@@ -17,14 +18,34 @@ namespace ApiBlog.Repositorio.Categorias
             return await DbSet.ToListAsync();
         }
 
-        public async Task<IEnumerable<CategoriaView>> GetView()
+        public async Task<IEnumerable<CategoriaView>> GetView(QueryParams queryParams = null)
         {
+            if (queryParams == null)
+            {
+                queryParams = new QueryParams
+                {
+                    Pagina = 1,
+                    Limite = 10
+                };
+            }
+
+            if (queryParams.Pagina < 1)
+                queryParams.Pagina = 1;
+
+            if (queryParams.Limite < 1)
+                queryParams.Limite = 10;
+
+            if (queryParams.Limite > 10)
+                queryParams.Limite = 10;
+
             return await DbSet.Select(x => new CategoriaView
             {
                 Id = x.Id,
                 Ativo = x.Ativo,
                 Descricao = x.Descricao
-            }).ToListAsync();
+            }).Skip((queryParams.Pagina - 1) * queryParams.Limite)
+              .Take(queryParams.Limite)
+              .ToListAsync();
         }
 
         public async Task<Categoria> Get(Guid id)

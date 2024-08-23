@@ -10,7 +10,7 @@ namespace ApiBlog.Dominio.Categorias
         Task<Categoria> Get(Guid id);
         Task Delete(Guid id);
         Task<bool> Save();
-        Task<IEnumerable<CategoriaView>> GetView();
+        Task<IEnumerable<CategoriaView>> GetView(QueryParams queryParams = null);
         Task<CategoriaView> GetView(Guid id);
     }
 }

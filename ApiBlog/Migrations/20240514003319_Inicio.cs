@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -55,6 +54,24 @@ namespace ApiBlog.Migrations
                     table.PrimaryKey("PK_USUARIO", x => x.IDUSUARIO);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
+
+
+            // Inserir um usuário padrão
+            migrationBuilder.InsertData(
+                table: "USUARIO",
+                columns: new[] { "IDUSUARIO", "ATIVO", "NOME", "SOBRENOME", "EMAIL", "SENHA", "FOTOPERFIL", "ADMIN", "DATACRIACAO" },
+                values: new object[]
+                {
+                Guid.NewGuid(), // Gerar um novo GUID para o IDUSUARIO
+                true,          // ATIVO
+                "Boot",         // NOME
+                "User",         // SOBRENOME
+                "Boot",         // EMAIL
+                "$2a$10$U7b8xqO8n7M7SXj9VUgoCecaZJzAH0q.GSAwD0HEY/v2c3ZQKkPIS", // SENHA
+                "",            // FOTOPERFIL (ou um valor padrão se aplicável)
+                true,          // ADMIN
+                DateTime.UtcNow // DATACRIACAO
+                });
 
             migrationBuilder.CreateTable(
                 name: "NOTICIA",

@@ -1,4 +1,5 @@
-﻿using ApiBlog.Dominio.Categorias;
+﻿using ApiBlog.Dominio.Bases;
+using ApiBlog.Dominio.Categorias;
 using ApiBlog.Dominio.Noticias;
 using ApiBlog.Dominio.Usuarios;
 using Microsoft.AspNetCore.Mvc;
@@ -25,11 +26,11 @@ namespace ApiBlog.Controllers.Site
         #endregion
 
         [HttpGet("categoria")]
-        public async Task<IActionResult> RecuperarTodasCategorias()
+        public async Task<IActionResult> RecuperarTodasCategorias([FromQuery] QueryParams queryParams)
         {
             try
             {
-                var categorias = await _repCategoria.GetView();
+                var categorias = await _repCategoria.GetView(queryParams);
 
                 return Ok(categorias);
             }
@@ -55,11 +56,11 @@ namespace ApiBlog.Controllers.Site
         }
 
         [HttpGet("noticia")]
-        public async Task<IActionResult> RecuperarTodasNoticias()
+        public async Task<IActionResult> RecuperarTodasNoticias([FromQuery] QueryParams queryParams)
         {
             try
             {
-                var noticias = await _repNoticia.GetView();
+                var noticias = await _repNoticia.GetView(queryParams);
 
                 return Ok(noticias);
             }
@@ -86,11 +87,11 @@ namespace ApiBlog.Controllers.Site
         }
 
         [HttpGet("usuario")]
-        public async Task<IActionResult> RecuperarTodosUsuarios()
+        public async Task<IActionResult> RecuperarTodosUsuarios([FromQuery] QueryParams queryParams)
         {
             try
             {
-                var usuarios = await _repUsuario.GetView();
+                var usuarios = await _repUsuario.GetView(queryParams);
 
                 return Ok(usuarios);
             }
