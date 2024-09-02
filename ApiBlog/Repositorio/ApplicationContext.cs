@@ -30,6 +30,7 @@ namespace ApiBlog.Repositorio
                 .ApplyConfiguration(new CategoriaConfig())
                 .ApplyConfiguration(new UsuarioConfig())
                 .ApplyConfiguration(new NoticiaConfig())
+                .ApplyConfiguration(new ConfigGeralConfig())
             ;
         }
     }

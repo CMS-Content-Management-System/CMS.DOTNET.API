@@ -16,5 +16,6 @@ namespace ApiBlog.Dominio.Usuarios
         Task<IEnumerable<UsuarioView>> GetView(QueryParams queryParams = null);
         Task<UsuarioView> GetView(Guid id);
         Task<Usuario> RecuperarUsuarioLogin(string email, string senha);
+        Task<int> Count(QueryParams? queryParams = null);
     }
 }

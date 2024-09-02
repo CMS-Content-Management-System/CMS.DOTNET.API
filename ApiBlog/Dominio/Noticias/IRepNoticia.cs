@@ -16,5 +16,8 @@ namespace ApiBlog.Dominio.Noticias
         bool ExisteNoticiaDoAutor(Usuario autor);
         Task<IEnumerable<NoticiaView>> GetView(QueryParams queryParams = null);
         Task<NoticiaView> GetView(Guid id);
+        Task<int> Count(QueryParams? queryParams = null);
+        Task<IEnumerable<NoticiaView>> ConsultarPalavraView(string palavra, QueryParams? queryParams = null);
+        Task<int> Count(string palavra, QueryParams? queryParams = null);
     }
 }

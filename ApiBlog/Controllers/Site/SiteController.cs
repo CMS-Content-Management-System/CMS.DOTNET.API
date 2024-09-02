@@ -1,6 +1,7 @@
 ﻿using ApiBlog.Dominio.Bases;
 using ApiBlog.Dominio.Categorias;
 using ApiBlog.Dominio.Noticias;
+using ApiBlog.Dominio.Parametrizacoes.Geral;
 using ApiBlog.Dominio.Usuarios;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,16 +15,34 @@ namespace ApiBlog.Controllers.Site
         private readonly IRepCategoria _repCategoria;
         private readonly IRepNoticia _repNoticia;
         private readonly IRepUsuario _repUsuario;
+        private readonly IRepConfigGeral _repConfigGeral;
 
         public SiteController(IRepCategoria repCategoria,
             IRepNoticia repNoticia,
-            IRepUsuario repUsuario)
+            IRepUsuario repUsuario,
+            IRepConfigGeral repConfigGeral)
         {
             _repCategoria = repCategoria;
             _repNoticia = repNoticia;
             _repUsuario = repUsuario;
+            _repConfigGeral = repConfigGeral;
         }
         #endregion
+
+        [HttpGet("config")]
+        public async Task<IActionResult> RecuperarConfiguracao()
+        {
+            try
+            {
+                var configuracao = await _repConfigGeral.GetView();
+
+                return Ok(configuracao);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
 
         [HttpGet("categoria")]
         public async Task<IActionResult> RecuperarTodasCategorias([FromQuery] QueryParams queryParams)
@@ -31,8 +50,15 @@ namespace ApiBlog.Controllers.Site
             try
             {
                 var categorias = await _repCategoria.GetView(queryParams);
+                var total = await _repCategoria.Count(queryParams);
 
-                return Ok(categorias);
+                var ret = new
+                {
+                    Content = categorias,
+                    Total = total
+                };
+
+                return Ok(ret);
             }
             catch (Exception e)
             {
@@ -61,8 +87,37 @@ namespace ApiBlog.Controllers.Site
             try
             {
                 var noticias = await _repNoticia.GetView(queryParams);
+                var total = await _repNoticia.Count(queryParams);
 
-                return Ok(noticias);
+                var ret = new
+                {
+                    Content = noticias,
+                    Total = total
+                };
+
+                return Ok(ret);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet("noticia-pesquisa/{palavra}")]
+        public async Task<IActionResult> PesquisarNoticias([FromRoute] string palavra, [FromQuery] QueryParams queryParams)
+        {
+            try
+            {
+                var noticias = await _repNoticia.ConsultarPalavraView(palavra, queryParams);
+                var total = await _repNoticia.Count(palavra, queryParams);
+
+                var ret = new
+                {
+                    Content = noticias,
+                    Total = total
+                };
+
+                return Ok(ret);
             }
             catch (Exception e)
             {
@@ -92,8 +147,15 @@ namespace ApiBlog.Controllers.Site
             try
             {
                 var usuarios = await _repUsuario.GetView(queryParams);
+                var total = await _repUsuario.Count(queryParams);
 
-                return Ok(usuarios);
+                var ret = new
+                {
+                    Content = usuarios,
+                    Total = total
+                };
+
+                return Ok(ret);
             }
             catch (Exception e)
             {

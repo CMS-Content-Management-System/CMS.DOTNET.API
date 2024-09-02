@@ -22,16 +22,10 @@ namespace ApiBlog.Repositorio.Noticias
             return await DbSet.ToListAsync();
         }
 
-        public async Task<IEnumerable<NoticiaView>> GetView(QueryParams queryParams = null)
+        public async Task<IEnumerable<NoticiaView>> GetView(QueryParams? queryParams = null)
         {
             if (queryParams == null)
-            {
-                queryParams = new QueryParams
-                {
-                    Pagina = 1,
-                    Limite = 10
-                };
-            }
+                queryParams = new QueryParams();
 
             if (queryParams.Pagina < 1)
                 queryParams.Pagina = 1;
@@ -42,35 +36,102 @@ namespace ApiBlog.Repositorio.Noticias
             if (queryParams.Limite > 10)
                 queryParams.Limite = 10;
 
-            return await DbSet.Select(x => new NoticiaView
-            {
-                Id = x.Id,
-                Ativo = x.Ativo,
-                Titulo = x.Titulo,
-                DataCriacao = x.DataCriacao,
-                Conteudo = x.Conteudo,
-                Imagem = x.Imagem,
-                CodigoAutor = x.CodigoAutor,
-                CodigoCategoria = x.CodigoCategoria,
-                Autor = new UsuarioView
+            return await DbSet.Where(x => !queryParams.Ativo.HasValue || x.Ativo == queryParams.Ativo.Value)
+                .Select(x => new NoticiaView
                 {
-                    Id = x.Autor.Id,
-                    Ativo = x.Autor.Ativo,
-                    Nome = x.Autor.Nome,
-                    SobreNome = x.Autor.SobreNome,
-                    Admin = x.Autor.Admin,
-                    Email = x.Autor.Email,
-                    FotoPerfil = x.Autor.FotoPerfil
-                },
-                Categoria = new CategoriaView
+                    Id = x.Id,
+                    Ativo = x.Ativo,
+                    Titulo = x.Titulo,
+                    DataCriacao = x.DataCriacao,
+                    Conteudo = x.Conteudo,
+                    Imagem = x.Imagem,
+                    CodigoAutor = x.CodigoAutor,
+                    CodigoCategoria = x.CodigoCategoria,
+                    Autor = new UsuarioView
+                    {
+                        Id = x.Autor.Id,
+                        Ativo = x.Autor.Ativo,
+                        Nome = x.Autor.Nome,
+                        SobreNome = x.Autor.SobreNome,
+                        Admin = x.Autor.Admin,
+                        Email = x.Autor.Email,
+                        FotoPerfil = x.Autor.FotoPerfil
+                    },
+                    Categoria = new CategoriaView
+                    {
+                        Id = x.Categoria.Id,
+                        Ativo = x.Categoria.Ativo,
+                        Descricao = x.Categoria.Descricao
+                    }
+                }).OrderByDescending(x => x.DataCriacao)
+                  .Skip((queryParams.Pagina - 1) * queryParams.Limite)
+                  .Take(queryParams.Limite)
+                  .ToListAsync();
+        }
+
+        public async Task<IEnumerable<NoticiaView>> ConsultarPalavraView(string palavra, QueryParams? queryParams = null)
+        {
+            if (queryParams == null)
+                queryParams = new QueryParams();
+
+            if (queryParams.Pagina < 1)
+                queryParams.Pagina = 1;
+
+            if (queryParams.Limite < 1)
+                queryParams.Limite = 10;
+
+            if (queryParams.Limite > 10)
+                queryParams.Limite = 10;
+
+            return await DbSet.Where(x => (x.Titulo.Contains(palavra) || x.Conteudo.Contains(palavra))
+                && (!queryParams.Ativo.HasValue || x.Ativo == queryParams.Ativo.Value))
+                .Select(x => new NoticiaView
                 {
-                    Id = x.Categoria.Id,
-                    Ativo = x.Categoria.Ativo,
-                    Descricao = x.Categoria.Descricao
-                }
-            }).Skip((queryParams.Pagina - 1) * queryParams.Limite)
-              .Take(queryParams.Limite)
-              .ToListAsync();
+                    Id = x.Id,
+                    Ativo = x.Ativo,
+                    Titulo = x.Titulo,
+                    DataCriacao = x.DataCriacao,
+                    Conteudo = x.Conteudo,
+                    Imagem = x.Imagem,
+                    CodigoAutor = x.CodigoAutor,
+                    CodigoCategoria = x.CodigoCategoria,
+                    Autor = new UsuarioView
+                    {
+                        Id = x.Autor.Id,
+                        Ativo = x.Autor.Ativo,
+                        Nome = x.Autor.Nome,
+                        SobreNome = x.Autor.SobreNome,
+                        Admin = x.Autor.Admin,
+                        Email = x.Autor.Email,
+                        FotoPerfil = x.Autor.FotoPerfil
+                    },
+                    Categoria = new CategoriaView
+                    {
+                        Id = x.Categoria.Id,
+                        Ativo = x.Categoria.Ativo,
+                        Descricao = x.Categoria.Descricao
+                    }
+                }).OrderByDescending(x => x.DataCriacao)
+                  .Skip((queryParams.Pagina - 1) * queryParams.Limite)
+                  .Take(queryParams.Limite)
+                  .ToListAsync();
+        }
+
+        public async Task<int> Count(QueryParams? queryParams = null)
+        {
+            if (queryParams == null)
+                queryParams = new QueryParams();
+
+            return await DbSet.CountAsync(x => !queryParams.Ativo.HasValue || x.Ativo == queryParams.Ativo.Value);
+        }
+
+        public async Task<int> Count(string palavra, QueryParams? queryParams = null)
+        {
+            if (queryParams == null)
+                queryParams = new QueryParams();
+
+            return await DbSet.CountAsync(x => (x.Titulo.Contains(palavra) || x.Conteudo.Contains(palavra))
+                && (!queryParams.Ativo.HasValue || x.Ativo == queryParams.Ativo.Value));
         }
 
         public async Task<Noticia> Get(Guid id)

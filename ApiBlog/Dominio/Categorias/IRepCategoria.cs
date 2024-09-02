@@ -12,5 +12,6 @@ namespace ApiBlog.Dominio.Categorias
         Task<bool> Save();
         Task<IEnumerable<CategoriaView>> GetView(QueryParams queryParams = null);
         Task<CategoriaView> GetView(Guid id);
+        Task<int> Count(QueryParams? queryParams = null);
     }
 }

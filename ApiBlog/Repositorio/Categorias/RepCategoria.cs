@@ -18,16 +18,10 @@ namespace ApiBlog.Repositorio.Categorias
             return await DbSet.ToListAsync();
         }
 
-        public async Task<IEnumerable<CategoriaView>> GetView(QueryParams queryParams = null)
+        public async Task<IEnumerable<CategoriaView>> GetView(QueryParams? queryParams = null)
         {
             if (queryParams == null)
-            {
-                queryParams = new QueryParams
-                {
-                    Pagina = 1,
-                    Limite = 10
-                };
-            }
+                queryParams = new QueryParams();
 
             if (queryParams.Pagina < 1)
                 queryParams.Pagina = 1;
@@ -38,14 +32,24 @@ namespace ApiBlog.Repositorio.Categorias
             if (queryParams.Limite > 10)
                 queryParams.Limite = 10;
 
-            return await DbSet.Select(x => new CategoriaView
-            {
-                Id = x.Id,
-                Ativo = x.Ativo,
-                Descricao = x.Descricao
-            }).Skip((queryParams.Pagina - 1) * queryParams.Limite)
-              .Take(queryParams.Limite)
-              .ToListAsync();
+            return await DbSet.Where(x => !queryParams.Ativo.HasValue || x.Ativo == queryParams.Ativo.Value)
+                .Select(x => new CategoriaView
+                {
+                    Id = x.Id,
+                    Ativo = x.Ativo,
+                    Descricao = x.Descricao
+                }).OrderBy(x => x.Descricao)
+                  .Skip((queryParams.Pagina - 1) * queryParams.Limite)
+                  .Take(queryParams.Limite)
+                  .ToListAsync();
+        }
+
+        public async Task<int> Count(QueryParams? queryParams = null)
+        {
+            if (queryParams == null)
+                queryParams = new QueryParams();
+
+            return await DbSet.CountAsync(x => !queryParams.Ativo.HasValue || x.Ativo == queryParams.Ativo.Value);
         }
 
         public async Task<Categoria> Get(Guid id)

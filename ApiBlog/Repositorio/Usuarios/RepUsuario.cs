@@ -18,16 +18,10 @@ namespace ApiBlog.Repositorio.Usuarios
             return await DbSet.ToListAsync();
         }
 
-        public async Task<IEnumerable<UsuarioView>> GetView(QueryParams queryParams = null)
+        public async Task<IEnumerable<UsuarioView>> GetView(QueryParams? queryParams = null)
         {
             if (queryParams == null)
-            {
-                queryParams = new QueryParams
-                {
-                    Pagina = 1,
-                    Limite = 10
-                };
-            }
+                queryParams = new QueryParams();
 
             if (queryParams.Pagina < 1)
                 queryParams.Pagina = 1;
@@ -38,18 +32,28 @@ namespace ApiBlog.Repositorio.Usuarios
             if (queryParams.Limite > 10)
                 queryParams.Limite = 10;
 
-            return await DbSet.Select(x => new UsuarioView
-            {
-                Id = x.Id,
-                Ativo = x.Ativo,
-                Nome = x.Nome,
-                SobreNome = x.SobreNome,
-                Email = x.Email,
-                Admin = x.Admin,
-                FotoPerfil = x.FotoPerfil
-            }).Skip((queryParams.Pagina - 1) * queryParams.Limite)
-              .Take(queryParams.Limite)
-              .ToListAsync();
+            return await DbSet.Where(x => !queryParams.Ativo.HasValue || x.Ativo == queryParams.Ativo.Value)
+                .Select(x => new UsuarioView
+                {
+                    Id = x.Id,
+                    Ativo = x.Ativo,
+                    Nome = x.Nome,
+                    SobreNome = x.SobreNome,
+                    Email = x.Email,
+                    Admin = x.Admin,
+                    FotoPerfil = x.FotoPerfil
+                }).OrderBy(x => x.Nome)
+                  .Skip((queryParams.Pagina - 1) * queryParams.Limite)
+                  .Take(queryParams.Limite)
+                  .ToListAsync();
+        }
+
+        public async Task<int> Count(QueryParams? queryParams = null)
+        {
+            if (queryParams == null)
+                queryParams = new QueryParams();
+
+            return await DbSet.CountAsync(x => !queryParams.Ativo.HasValue || x.Ativo == queryParams.Ativo.Value);
         }
 
         public async Task<Usuario> RecuperarUsuarioLogin(string email, string senha)

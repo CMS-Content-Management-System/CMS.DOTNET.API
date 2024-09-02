@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using ApiBlog.Repositorio.Parametrizacoes.Geral;
+using ApiBlog.Dominio.Parametrizacoes.Geral;
 
 namespace ApiBlog
 {
@@ -89,6 +91,7 @@ namespace ApiBlog
             builder.Services.AddScoped<IRepCategoria, RepCategoria>();
             builder.Services.AddScoped<IRepUsuario, RepUsuario>();
             builder.Services.AddScoped<IRepNoticia, RepNoticia>();
+            builder.Services.AddScoped<IRepConfigGeral, RepConfigGeral>();
             builder.Services.AddScoped<IValidadorCategoria, ValidadorCategoria>();
             builder.Services.AddScoped<IValidadorUsuario, ValidadorUsuario>();
             builder.Services.AddScoped<IValidadorNoticia, ValidadorNoticia>();
