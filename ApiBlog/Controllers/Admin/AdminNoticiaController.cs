@@ -50,7 +50,7 @@ namespace ApiBlog.Controllers.Admin
                 if (autor == null)
                     return BadRequest($"Autor de código '{guidUsuario}' não existe!");
 
-                var noticia = new Noticia(dto.Titulo, dto.Conteudo, dto.Imagem, dto.Prioridade, autor, categoria);
+                var noticia = new Noticia(dto.Titulo, dto.SubTitulo, dto.Conteudo, dto.Imagem, dto.Prioridade, autor, categoria);
 
                 _validador.ValidarSePodeInserir(noticia);
 
@@ -91,7 +91,7 @@ namespace ApiBlog.Controllers.Admin
                 if (autor == null)
                     return BadRequest($"Autor de código '{guidUsuario}' não existe!");
 
-                noticia.AlterarDados(dto.Titulo, dto.Conteudo, dto.Imagem, dto.Prioridade, autor, categoria);
+                noticia.AlterarDados(dto.Titulo, dto.SubTitulo, dto.Conteudo, dto.Imagem, dto.Prioridade, autor, categoria);
 
                 _validador.ValidarAlteracao(noticia);
 
@@ -183,6 +183,7 @@ namespace ApiBlog.Controllers.Admin
     public class NoticiaDto
     {
         public string Titulo { get; set; }
+        public string SubTitulo { get; set; }
         public string Conteudo { get; set; }
         public string Imagem { get; set; }
         public int Prioridade { get; set; }
