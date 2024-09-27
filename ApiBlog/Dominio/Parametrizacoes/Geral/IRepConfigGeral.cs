@@ -5,6 +5,7 @@ namespace ApiBlog.Dominio.Parametrizacoes.Geral
 {
     public interface IRepConfigGeral : IRep<ConfigGeral>
     {
+        Task<ConfigGeral> Get();
         Task<ConfigGeralView> GetView();
         Task<bool> Save();
     }

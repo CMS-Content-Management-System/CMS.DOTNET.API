@@ -30,6 +30,21 @@ namespace ApiBlog.Repositorio.Parametrizacoes.Geral
             return configGeral;
         }
 
+        public async Task<ConfigGeral> Get()
+        {
+            var config = await DbSet.FirstOrDefaultAsync();
+
+            if (config == null)
+                return null;
+
+            return config;
+        }
+
+        public void Add(ConfigGeral config)
+        {
+            DbSet.Add(config);
+        }
+
         public async Task<bool> Save()
         {
             return await Db.SaveChangesAsync() > 0;

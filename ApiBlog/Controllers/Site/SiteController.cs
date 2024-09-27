@@ -29,7 +29,7 @@ namespace ApiBlog.Controllers.Site
         }
         #endregion
 
-        [HttpGet("config")]
+        [HttpGet("config-geral")]
         public async Task<IActionResult> RecuperarConfiguracao()
         {
             try

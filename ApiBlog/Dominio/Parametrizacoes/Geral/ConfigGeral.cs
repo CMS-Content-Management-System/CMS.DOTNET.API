@@ -25,5 +25,18 @@ namespace ApiBlog.Dominio.Parametrizacoes.Geral
         public string Endereco { get; private set; }
         public string Instagram { get; private set; }
         public string Facebook { get; private set; }
+
+        public void Alterar(string nomeSite, string imagemSite, string nome, string fone,
+                string email, string endereco, string instagram, string facebook)
+        {
+            NomeSite = nomeSite;
+            ImagemSite = imagemSite;
+            Nome = nome;
+            Fone = fone;
+            Email = email;
+            Endereco = endereco;
+            Instagram = instagram;
+            Facebook = facebook;
+        }
     }
 }
