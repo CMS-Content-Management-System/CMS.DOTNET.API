@@ -43,7 +43,7 @@ namespace ApiBlog.Controllers.Admin
             }
         }
 
-        [Authorize]
+        //[Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> AlterarUsuario(Guid id, UsuarioDto dto)
         {
