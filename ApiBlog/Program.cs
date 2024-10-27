@@ -16,6 +16,8 @@ using System.Text;
 using Microsoft.OpenApi.Models;
 using ApiBlog.Repositorio.Parametrizacoes.Geral;
 using ApiBlog.Dominio.Parametrizacoes.Geral;
+using ApiBlog.Dominio.Propagandas;
+using ApiBlog.Repositorio.Propagandas;
 
 namespace ApiBlog
 {
@@ -91,6 +93,7 @@ namespace ApiBlog
             builder.Services.AddScoped<IRepCategoria, RepCategoria>();
             builder.Services.AddScoped<IRepUsuario, RepUsuario>();
             builder.Services.AddScoped<IRepNoticia, RepNoticia>();
+            builder.Services.AddScoped<IRepPropaganda, RepPropaganda>();
             builder.Services.AddScoped<IRepConfigGeral, RepConfigGeral>();
             builder.Services.AddScoped<IValidadorCategoria, ValidadorCategoria>();
             builder.Services.AddScoped<IValidadorUsuario, ValidadorUsuario>();

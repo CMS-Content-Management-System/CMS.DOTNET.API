@@ -4,6 +4,7 @@ using ApiBlog.Repositorio;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiBlog.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20241015003836_novosCampos")]
+    partial class novosCampos
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -161,41 +164,6 @@ namespace ApiBlog.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CONFIGGERAL", (string)null);
-                });
-
-            modelBuilder.Entity("ApiBlog.Dominio.Propagandas.Propaganda", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("char(36)")
-                        .HasColumnName("IDPROPAGANDA");
-
-                    b.Property<bool>("Ativo")
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("ATIVO");
-
-                    b.Property<string>("Imagem")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("IMAGEM");
-
-                    b.Property<string>("Link")
-                        .IsRequired()
-                        .HasColumnType("longtext")
-                        .HasColumnName("LINK");
-
-                    b.Property<int>("Prioridade")
-                        .HasColumnType("int")
-                        .HasColumnName("PRIORIDADE");
-
-                    b.Property<string>("Titulo")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
-                        .HasColumnName("TITULO");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PROPAGANDA", (string)null);
                 });
 
             modelBuilder.Entity("ApiBlog.Dominio.Usuarios.Usuario", b =>

@@ -31,6 +31,7 @@ namespace ApiBlog.Repositorio
                 .ApplyConfiguration(new UsuarioConfig())
                 .ApplyConfiguration(new NoticiaConfig())
                 .ApplyConfiguration(new ConfigGeralConfig())
+                .ApplyConfiguration(new PropagandaConfig())
             ;
         }
     }

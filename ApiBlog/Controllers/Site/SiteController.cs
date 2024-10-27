@@ -2,6 +2,7 @@
 using ApiBlog.Dominio.Categorias;
 using ApiBlog.Dominio.Noticias;
 using ApiBlog.Dominio.Parametrizacoes.Geral;
+using ApiBlog.Dominio.Propagandas;
 using ApiBlog.Dominio.Usuarios;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,16 +17,19 @@ namespace ApiBlog.Controllers.Site
         private readonly IRepNoticia _repNoticia;
         private readonly IRepUsuario _repUsuario;
         private readonly IRepConfigGeral _repConfigGeral;
+        private readonly IRepPropaganda _repPropaganda;
 
         public SiteController(IRepCategoria repCategoria,
             IRepNoticia repNoticia,
             IRepUsuario repUsuario,
-            IRepConfigGeral repConfigGeral)
+            IRepConfigGeral repConfigGeral,
+            IRepPropaganda repPropaganda)
         {
             _repCategoria = repCategoria;
             _repNoticia = repNoticia;
             _repUsuario = repUsuario;
             _repConfigGeral = repConfigGeral;
+            _repPropaganda = repPropaganda;
         }
         #endregion
 
@@ -171,6 +175,43 @@ namespace ApiBlog.Controllers.Site
                 var usuario = await _repUsuario.GetView(id);
 
                 return Ok(usuario);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet("propaganda")]
+        public async Task<IActionResult> RecuperarTodasPropagandas([FromQuery] QueryParams queryParams)
+        {
+            try
+            {
+                var propagandas = await _repPropaganda.GetView(queryParams);
+                var total = await _repPropaganda.Count(queryParams);
+
+                var ret = new
+                {
+                    Content = propagandas,
+                    Total = total
+                };
+
+                return Ok(ret);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet("propaganda/{id}")]
+        public async Task<IActionResult> RecuperarPropaganda(Guid id)
+        {
+            try
+            {
+                var propaganda = await _repPropaganda.GetView(id);
+
+                return Ok(propaganda);
             }
             catch (Exception e)
             {
