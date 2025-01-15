@@ -25,12 +25,16 @@ jobs:
                   sudo apt-get install -y dotnet-sdk-8.0
                   echo "Dotnet SDK 8 instalado com sucesso!"
 
+                  # Garantir que o .NET esteja no PATH
+                  export PATH=$PATH:/usr/local/bin
+                  dotnet --version
+
             # Instalar o Entity Framework (EF)
             - name: "Instalar Entity Framework"
               run: |
                   dotnet tool install --global dotnet-ef
                   echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
-                  
+
             # Restaurar dependências do projeto
             - name: "Restaurar dependências"
               run: |
