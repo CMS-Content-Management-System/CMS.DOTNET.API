@@ -38,6 +38,23 @@ namespace ApiBlog.Migrations
                     table.PrimaryKey("PK_CONFIGGERAL", x => x.IDCONFIGGERAL);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
+
+            // Inserir config padrão
+            migrationBuilder.InsertData(
+                table: "CONFIGGERAL",
+                columns: new[] { "IDCONFIGGERAL", "NOMESITE", "IMAGEMSITE", "NOME", "FONE", "EMAIL", "ENDERECO", "INSTAGRAM", "FACEBOOK" },
+                values: new object[]
+                {
+                Guid.NewGuid(),    // Gerar um novo GUID para o IDUSUARIO
+                "Nome Site",       // NOMESITE
+                "",                // IMAGEMSITE
+                "Site",            // NOME
+                "(48)00000-0000",  // FONE
+                "teste@teste.com", // EMAIL
+                "",                // ENDERECO
+                "",                // INSTAGRAM
+                ""                 // FACEBOOK
+                });
         }
 
         /// <inheritdoc />
