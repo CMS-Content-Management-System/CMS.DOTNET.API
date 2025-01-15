@@ -46,15 +46,11 @@ jobs:
                   # Adicionar o caminho global de ferramentas ao PATH
                   echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
 
-            # Construir o projeto
-            - name: "Construir o projeto"
-              run: |
-                  cd ApiBlog
-                  dotnet build --configuration Release
-
             # Aplicar as migrations (no próprio GitHub Actions, não no servidor remoto)
             - name: "Aplicar Migrations"
               run: |
+                  dotnet --version
+                  dotnet ef --version
                   cd ApiBlog
                   dotnet ef database update
 
