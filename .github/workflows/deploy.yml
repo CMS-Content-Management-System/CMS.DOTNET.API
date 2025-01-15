@@ -91,6 +91,6 @@ jobs:
               run: |
                   sshpass -p "${{ secrets.SFTP_PASSWORD }}" ssh -o StrictHostKeyChecking=no \
                   ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }} << 'EOF'
-                      # Entrar na pasta ApiBlog dentro do contêiner e rodar migrations
-                      sudo docker exec container-api-blog bash -c "cd /path/to/ApiBlog && dotnet ef database update"
+                      # Rodar migrations para o banco de dados
+                      sudo docker exec container-api-blog dotnet ef database update
                   EOF
