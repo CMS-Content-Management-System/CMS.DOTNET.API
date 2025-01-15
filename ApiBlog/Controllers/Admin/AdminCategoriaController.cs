@@ -42,7 +42,7 @@ namespace ApiBlog.Controllers.Admin
         }
 
         [Authorize]
-        [HttpPut("{id}/alterar-descricao-tttt")]
+        [HttpPut("{id}/alterar-descricao")]
         public async Task<IActionResult> AlterarDescricaoCategoria(Guid id, CategoriaDto dto)
         {
             try
