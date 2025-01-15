@@ -14,18 +14,21 @@ jobs:
               # Instalar o .NET SDK (versão 8)
             - name: "Instalar .NET SDK 8"
               run: |
-                  wget https://download.visualstudio.microsoft.com/download/pr/e9f72fc7-1a6d-4bff-bfc9-5adbf97881b0/3c036e258c7365577782c062ff60d8ea/dotnet-sdk-8.0.100-linux-x64.tar.gz
-                  mkdir -p $HOME/dotnet
-                  tar -xzf dotnet-sdk-8.0.100-linux-x64.tar.gz -C $HOME/dotnet
-                  export PATH=$PATH:$HOME/dotnet
-                  echo "Dotnet instalado"
+                  # Adicionar repositórios da Microsoft
+                  wget https://packages.microsoft.com/keys/microsoft.asc -O microsoft.asc
+                  sudo apt-key add microsoft.asc
+                  sudo apt-add-repository https://packages.microsoft.com/ubuntu/22.04/prod
+
+                  # Instalar o .NET SDK 8
+                  sudo apt-get update
+                  sudo apt-get install -y dotnet-sdk-8.0
+                  echo "Dotnet SDK 8 instalado com sucesso!"
 
             # Instalar o Entity Framework (EF)
             - name: "Instalar Entity Framework"
               run: |
                   dotnet tool install --global dotnet-ef
                   echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
-
             # Restaurar dependências do projeto
             - name: "Restaurar dependências"
               run: |
