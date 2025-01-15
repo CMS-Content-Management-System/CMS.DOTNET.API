@@ -40,11 +40,8 @@ jobs:
             # Instalar o dotnet-ef globalmente (caso não tenha sido instalado ainda)
             - name: "Instalar dotnet-ef"
               run: |
-                  # Instalar a ferramenta dotnet-ef globalmente
-                  sudo dotnet tool install --global dotnet-ef --version 8.* 
-
-                  # Adicionar o caminho global de ferramentas ao PATH
-                  echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+                  sudo dotnet tool install --global dotnet-ef 
+                  dotnet tool restore 
 
             # Aplicar as migrations (no próprio GitHub Actions, não no servidor remoto)
             - name: "Aplicar Migrations"
