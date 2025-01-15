@@ -31,17 +31,20 @@ jobs:
                   dotnet --version
                   dotnet --list-runtimes
 
-            # Instalar a ferramenta dotnet-ef localmente, se necessário
-            - name: "Instalar dotnet-ef localmente"
-              run: |
-                  cd ApiBlog
-                  dotnet tool restore  # Isso vai restaurar todas as ferramentas do projeto, incluindo dotnet-ef
-
             # Restaurar dependências do projeto
             - name: "Restaurar dependências"
               run: |
                   cd ApiBlog
                   dotnet restore
+
+            # Instalar o dotnet-ef globalmente (caso não tenha sido instalado ainda)
+            - name: "Instalar dotnet-ef"
+              run: |
+                  # Instalar a ferramenta dotnet-ef globalmente
+                  sudo dotnet tool install --global dotnet-ef --version 8.* 
+
+                  # Adicionar o caminho global de ferramentas ao PATH
+                  echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
 
             # Construir o projeto
             - name: "Construir o projeto"
