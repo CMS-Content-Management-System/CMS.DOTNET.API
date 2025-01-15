@@ -83,5 +83,5 @@ jobs:
                   sshpass -p "${{ secrets.SFTP_PASSWORD }}" ssh -o StrictHostKeyChecking=no \
                   ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }} << 'EOF'
                       # Rodar o container com a imagem
-                      sudo docker run --name container-api-blog -p 5000:5000 imagem-api-blog
+                      sudo docker run -d --name container-api-blog -p 5000:5000 imagem-api-blog
                   EOF
