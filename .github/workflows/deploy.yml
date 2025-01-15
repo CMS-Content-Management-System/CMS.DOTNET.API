@@ -46,12 +46,42 @@ jobs:
             # Salvar a imagem Docker como arquivo tar
             - name: "Salvar imagem Docker como arquivo tar"
               run: |
-                  docker save -o imagem-api-blog-teste.tar imagem-api-blog
+                  docker save -o imagem-api-blog.tar imagem-api-blog
 
             # Transferir a imagem Docker para o servidor remoto
             - name: "Transferir imagem Docker para o servidor remoto"
               run: |
                   sshpass -p "${{ secrets.SFTP_PASSWORD }}" \
-                  scp -o StrictHostKeyChecking=no imagem-api-blog-teste.tar \
+                  scp -o StrictHostKeyChecking=no imagem-api-blog.tar \
                   ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }}:/var/www/api-back/imagem-api-back/
                   
+            # Remover container e imagem Docker no servidor remoto
+            - name: "Remover container e imagem Docker do servidor remoto"
+              run: |
+                  sshpass -p "${{ secrets.SFTP_PASSWORD }}" ssh -o StrictHostKeyChecking=no \
+                  ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }} << 'EOF'
+                      # Parar o container, se estiver rodando
+                      sudo docker stop container-api-blog || true
+                      # Remover o container
+                      sudo docker rm container-api-blog || true
+                      # Remover a imagem
+                      sudo docker rmi imagem-api-blog || true
+                  EOF
+
+            # Carregar a imagem Docker a partir do arquivo .tar no servidor remoto
+            - name: "Carregar a imagem Docker do arquivo .tar"
+              run: |
+                  sshpass -p "${{ secrets.SFTP_PASSWORD }}" ssh -o StrictHostKeyChecking=no \
+                  ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }} << 'EOF'
+                      # Carregar a imagem Docker a partir do arquivo .tar
+                      sudo docker load -i /var/www/api-back/imagem-api-back/imagem-api-blog.tar
+                  EOF
+
+            # Rodar a imagem Docker no servidor remoto
+            - name: "Rodar a imagem Docker no servidor remoto"
+              run: |
+                  sshpass -p "${{ secrets.SFTP_PASSWORD }}" ssh -o StrictHostKeyChecking=no \
+                  ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }} << 'EOF'
+                      # Rodar o container com a imagem
+                      sudo docker run --name container-api-blog -p 5000:5000 imagem-api-blog
+                  EOF
