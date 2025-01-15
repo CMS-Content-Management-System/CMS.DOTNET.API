@@ -34,9 +34,7 @@ jobs:
             # Copiar o arquivo appsettings.json do servidor remoto
             - name: "Copiar appsettings.json do servidor remoto"
               run: |
-                  sshpass -p ${{ secrets.SFTP_PASSWORD }} \
-                  scp -o StrictHostKeyChecking=no \
-                  ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }}:/var/www/api-back/config-api-back/appsettings.json ./ApiBlog/appsettings.json
+                  sshpass -p "${{ secrets.SFTP_PASSWORD }}" scp -o StrictHostKeyChecking=no ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }}:/var/www/api-back/config-api-back/appsettings.json ./ApiBlog/appsettings.json
 
             # Construir a imagem Docker
             #- name: "Construir a imagem Docker"
