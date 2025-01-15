@@ -85,3 +85,12 @@ jobs:
                       # Rodar o container com a imagem
                       sudo docker run -d --name container-api-blog -p 5000:5000 imagem-api-blog
                   EOF
+
+            # Aplicar as migrations dentro do contêiner, especificando o diretório correto
+            - name: "Aplicar migrations"
+              run: |
+                  sshpass -p "${{ secrets.SFTP_PASSWORD }}" ssh -o StrictHostKeyChecking=no \
+                  ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }} << 'EOF'
+                      # Entrar na pasta ApiBlog dentro do contêiner e rodar migrations
+                      sudo docker exec container-api-blog bash -c "cd /path/to/ApiBlog && dotnet ef database update"
+                  EOF
