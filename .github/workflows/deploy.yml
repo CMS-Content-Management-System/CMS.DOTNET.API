@@ -31,12 +31,11 @@ jobs:
                   dotnet --version
                   dotnet --list-runtimes
 
-            # Instalar a versão compatível do Entity Framework para .NET 8
-            - name: "Instalar Entity Framework para .NET 8"
+            # Instalar a ferramenta dotnet-ef localmente, se necessário
+            - name: "Instalar dotnet-ef localmente"
               run: |
-                  # Instalar a versão mais recente do dotnet-ef que seja compatível com o .NET 8
-                  dotnet tool install --global dotnet-ef --version 8.*
-                  echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+                  cd ApiBlog
+                  dotnet tool restore  # Isso vai restaurar todas as ferramentas do projeto, incluindo dotnet-ef
 
             # Restaurar dependências do projeto
             - name: "Restaurar dependências"
