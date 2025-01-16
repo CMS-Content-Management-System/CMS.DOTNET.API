@@ -47,6 +47,8 @@ jobs:
                   dotnet --version
                   dotnet ef --version
                   ls
+                  dotnet ef database update --project ApiBlog
+                  dotnet ef --version
 
 
 
