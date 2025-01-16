@@ -11,33 +11,37 @@ jobs:
             - name: "Baixar o código"
               uses: actions/checkout@v4
 
-              # Instalar o .NET SDK (versão 8)
-            - name: "Instalar .NET SDK 8"
+            - name: Atualizar o sistema
               run: |
-                  # Adicionar repositórios da Microsoft
-                  wget https://packages.microsoft.com/config/ubuntu/22.04/prod.list
-                  sudo mv prod.list /etc/apt/sources.list.d/dotnet-prod.list
-                  wget https://packages.microsoft.com/keys/microsoft.asc -O microsoft.asc
-                  sudo apt-key add microsoft.asc
-                  sudo apt-get update
-
-                  # Instalar o .NET SDK 8
-                  sudo apt-get install -y dotnet-sdk-8.0
-
-                  # Instalar o .NET Runtime 8
-                  sudo apt-get install -y dotnet-runtime-8.0
-
-                  # Verificar a instalação
-                  dotnet --version
-                  dotnet --list-runtimes
-
-            # Restaurar dependências do projeto
-            - name: "Restaurar dependências"
+                sudo apt update
+                sudo apt upgrade -y
+          
+            - name: Instalar dependências para o repositório da Microsoft
               run: |
-                  cd ApiBlog
-                  dotnet restore
+                sudo apt install -y wget gpg
+          
+            - name: Adicionar chave e repositório da Microsoft
+              run: |
+                # Baixar a chave de assinatura
+                wget https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/packages-microsoft-prod.deb
+                # Instalar o pacote que adiciona o repositório
+                sudo dpkg -i packages-microsoft-prod.deb
+                # Remover arquivo temporário
+                rm packages-microsoft-prod.deb
+          
+            - name: Instalar o SDK do .NET 8
+              run: |
+                sudo apt update
+                sudo apt install -y dotnet-sdk-8.0
+          
+            - name: Instalar Entity Framework CLI
+              run: |
+                dotnet tool install --global dotnet-ef
+                # Adicionar a pasta de ferramentas globais ao PATH, se necessário
+                echo 'export PATH="$PATH:$HOME/.dotnet/tools"' >> ~/.bashrc
+                source ~/.bashrc
 
-            # Instalar o dotnet-ef globalmente (caso não tenha sido instalado ainda)
+            # Teste
             - name: "Instalar dotnet-ef"
               run: |
                   sudo dotnet tool install --global dotnet-ef 
@@ -45,6 +49,45 @@ jobs:
                   pwd
                   dotnet --version
                   dotnet ef --version
+
+
+
+
+
+            ## Instalar o .NET SDK (versão 8)
+            #- name: "Instalar .NET SDK 8"
+            #  run: |
+            #      # Adicionar repositórios da Microsoft
+            #      wget https://packages.microsoft.com/config/ubuntu/22.04/prod.list
+            #      sudo mv prod.list /etc/apt/sources.list.d/dotnet-prod.list
+            #      wget https://packages.microsoft.com/keys/microsoft.asc -O microsoft.asc
+            #      sudo apt-key add microsoft.asc
+            #      sudo apt-get update
+#
+            #      # Instalar o .NET SDK 8
+            #      sudo apt-get install -y dotnet-sdk-8.0
+#
+            #      # Instalar o .NET Runtime 8
+            #      sudo apt-get install -y dotnet-runtime-8.0
+#
+            #      # Verificar a instalação
+            #      dotnet --version
+            #      dotnet --list-runtimes
+#
+            ## Restaurar dependências do projeto
+            #- name: "Restaurar dependências"
+            #  run: |
+            #      cd ApiBlog
+            #      dotnet restore
+#
+            ## Instalar o dotnet-ef globalmente (caso não tenha sido instalado ainda)
+            #- name: "Instalar dotnet-ef"
+            #  run: |
+            #      sudo dotnet tool install --global dotnet-ef 
+            #      dotnet tool restore 
+            #      pwd
+            #      dotnet --version
+            #      dotnet ef --version
 
             ## Aplicar as migrations (no próprio GitHub Actions, não no servidor remoto)
             #- name: "Aplicar Migrations"
