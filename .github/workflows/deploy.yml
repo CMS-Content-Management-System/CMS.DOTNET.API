@@ -14,7 +14,6 @@ jobs:
             - name: Atualizar o sistema
               run: |
                 sudo apt update
-                sudo apt upgrade -y
           
             - name: Instalar dependências para o repositório da Microsoft
               run: |
@@ -44,11 +43,10 @@ jobs:
             # Teste
             - name: "Instalar dotnet-ef"
               run: |
-                  sudo dotnet tool install --global dotnet-ef 
-                  dotnet tool restore 
                   pwd
                   dotnet --version
                   dotnet ef --version
+                  ls
 
 
 
