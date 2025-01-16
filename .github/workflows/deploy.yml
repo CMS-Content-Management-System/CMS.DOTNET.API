@@ -42,119 +42,122 @@ jobs:
               run: |
                   sudo dotnet tool install --global dotnet-ef 
                   dotnet tool restore 
-
-            # Aplicar as migrations (no próprio GitHub Actions, não no servidor remoto)
-            - name: "Aplicar Migrations"
-              run: |
+                  pwd
                   dotnet --version
                   dotnet ef --version
-                  cd ApiBlog
-                  dotnet ef database update
 
-            # Instalar o Docker
-            - name: "Instalar Docker"
-              run: |
-                sudo apt-get update
-                sudo apt-get install ca-certificates curl
-                sudo install -m 0755 -d /etc/apt/keyrings
-                sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-                sudo chmod a+r /etc/apt/keyrings/docker.asc
-                echo \
-                "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-                $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-                sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-                sudo apt-get update
-                sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-
-            - name: "Install sshpass"
-              run: |
-                sudo apt-get update
-                sudo apt-get install -y sshpass
-
-            # Copiar o arquivo appsettings.json do servidor remoto
-            - name: "Copiar appsettings.json do servidor remoto"
-              run: |
-                  sudo sshpass -p "${{ secrets.SFTP_PASSWORD }}" \
-                  scp -o StrictHostKeyChecking=no \
-                  ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }}:/var/www/api-back/config-api-back/appsettings.json ./ApiBlog/appsettings.json
-
-            # Construir a imagem Docker
-            - name: "Construir a imagem Docker"
-              run: |
-                  docker build -t imagem-api-blog ./ApiBlog
-
-            # Salvar a imagem Docker como arquivo tar
-            - name: "Salvar imagem Docker como arquivo tar"
-              run: |
-                  docker save -o imagem-api-blog.tar imagem-api-blog
-
-            # Transferir a imagem Docker para o servidor remoto
-            - name: "Transferir imagem Docker para o servidor remoto"
-              run: |
-                  sshpass -p "${{ secrets.SFTP_PASSWORD }}" \
-                  scp -o StrictHostKeyChecking=no imagem-api-blog.tar \
-                  ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }}:/var/www/api-back/imagem-api-back/
-                  
-            # Remover container e imagem Docker no servidor remoto
-            - name: "Remover container e imagem Docker do servidor remoto"
-              run: |
-                  sshpass -p "${{ secrets.SFTP_PASSWORD }}" ssh -o StrictHostKeyChecking=no \
-                  ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }} << 'EOF'
-                      # Parar o container, se estiver rodando
-                      sudo docker stop container-api-blog || true
-                      # Remover o container
-                      sudo docker rm container-api-blog || true
-                      # Remover a imagem
-                      sudo docker rmi imagem-api-blog || true
-                  EOF
-
-            # Instalar o .NET SDK (versão 8)
-            - name: "Instalar .NET SDK 8"
-              run: |
-                  wget https://download.visualstudio.microsoft.com/download/pr/e9f72fc7-1a6d-4bff-bfc9-5adbf97881b0/3c036e258c7365577782c062ff60d8ea/dotnet-sdk-8.0.100-linux-x64.tar.gz
-                  mkdir -p $HOME/dotnet
-                  tar -xzf dotnet-sdk-8.0.100-linux-x64.tar.gz -C $HOME/dotnet
-                  export PATH=$PATH:$HOME/dotnet
-                  echo "Dotnet instalado"
-
-            # Instalar o Entity Framework (EF)
-            - name: "Instalar Entity Framework"
-              run: |
-                  dotnet tool install --global dotnet-ef
-                  echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
-
-            # Restaurar dependências do projeto
-            - name: "Restaurar dependências"
-              run: |
-                  cd ApiBlog
-                  dotnet restore
-
-            # Construir o projeto
-            - name: "Construir o projeto"
-              run: |
-                  cd ApiBlog
-                  dotnet build --configuration Release
-
-            # Aplicar as migrations (no próprio GitHub Actions, não no servidor remoto)
-            - name: "Aplicar Migrations"
-              run: |
-                  cd ApiBlog
-                  dotnet ef database update
-
-            # Carregar a imagem Docker a partir do arquivo .tar no servidor remoto
-            - name: "Carregar a imagem Docker do arquivo .tar"
-              run: |
-                  sshpass -p "${{ secrets.SFTP_PASSWORD }}" ssh -o StrictHostKeyChecking=no \
-                  ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }} << 'EOF'
-                      # Carregar a imagem Docker a partir do arquivo .tar
-                      sudo docker load -i /var/www/api-back/imagem-api-back/imagem-api-blog.tar
-                  EOF
-
-            # Rodar a imagem Docker no servidor remoto
-            - name: "Rodar a imagem Docker no servidor remoto"
-              run: |
-                  sshpass -p "${{ secrets.SFTP_PASSWORD }}" ssh -o StrictHostKeyChecking=no \
-                  ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }} << 'EOF'
-                      # Rodar o container com a imagem
-                      sudo docker run -d --name container-api-blog -p 5000:5000 imagem-api-blog
-                  EOF
+            ## Aplicar as migrations (no próprio GitHub Actions, não no servidor remoto)
+            #- name: "Aplicar Migrations"
+            #  run: |
+            #      dotnet --version
+            #      dotnet ef --version
+            #      cd ApiBlog
+            #      dotnet ef database update
+#
+            ## Instalar o Docker
+            #- name: "Instalar Docker"
+            #  run: |
+            #    sudo apt-get update
+            #    sudo apt-get install ca-certificates curl
+            #    sudo install -m 0755 -d /etc/apt/keyrings
+            #    sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+            #    sudo chmod a+r /etc/apt/keyrings/docker.asc
+            #    echo \
+            #    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+            #    $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+            #    sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+            #    sudo apt-get update
+            #    sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+#
+            #- name: "Install sshpass"
+            #  run: |
+            #    sudo apt-get update
+            #    sudo apt-get install -y sshpass
+#
+            ## Copiar o arquivo appsettings.json do servidor remoto
+            #- name: "Copiar appsettings.json do servidor remoto"
+            #  run: |
+            #      sudo sshpass -p "${{ secrets.SFTP_PASSWORD }}" \
+            #      scp -o StrictHostKeyChecking=no \
+            #      ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }}:/var/www/api-back/config-api-back/appsettings.json ./ApiBlog/appsettings.json
+#
+            ## Construir a imagem Docker
+            #- name: "Construir a imagem Docker"
+            #  run: |
+            #      docker build -t imagem-api-blog ./ApiBlog
+#
+            ## Salvar a imagem Docker como arquivo tar
+            #- name: "Salvar imagem Docker como arquivo tar"
+            #  run: |
+            #      docker save -o imagem-api-blog.tar imagem-api-blog
+#
+            ## Transferir a imagem Docker para o servidor remoto
+            #- name: "Transferir imagem Docker para o servidor remoto"
+            #  run: |
+            #      sshpass -p "${{ secrets.SFTP_PASSWORD }}" \
+            #      scp -o StrictHostKeyChecking=no imagem-api-blog.tar \
+            #      ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }}:/var/www/api-back/imagem-api-back/
+            #      
+            ## Remover container e imagem Docker no servidor remoto
+            #- name: "Remover container e imagem Docker do servidor remoto"
+            #  run: |
+            #      sshpass -p "${{ secrets.SFTP_PASSWORD }}" ssh -o StrictHostKeyChecking=no \
+            #      ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }} << 'EOF'
+            #          # Parar o container, se estiver rodando
+            #          sudo docker stop container-api-blog || true
+            #          # Remover o container
+            #          sudo docker rm container-api-blog || true
+            #          # Remover a imagem
+            #          sudo docker rmi imagem-api-blog || true
+            #      EOF
+#
+            ## Instalar o .NET SDK (versão 8)
+            #- name: "Instalar .NET SDK 8"
+            #  run: |
+            #      wget https://download.visualstudio.microsoft.com/download/pr/e9f72fc7-1a6d-4bff-bfc9-5adbf97881b0/3c036e258c7365577782c062ff60d8ea/dotnet-sdk-8.0.100-linux-x64.tar.gz
+            #      mkdir -p $HOME/dotnet
+            #      tar -xzf dotnet-sdk-8.0.100-linux-x64.tar.gz -C $HOME/dotnet
+            #      export PATH=$PATH:$HOME/dotnet
+            #      echo "Dotnet instalado"
+#
+            ## Instalar o Entity Framework (EF)
+            #- name: "Instalar Entity Framework"
+            #  run: |
+            #      dotnet tool install --global dotnet-ef
+            #      echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+#
+            ## Restaurar dependências do projeto
+            #- name: "Restaurar dependências"
+            #  run: |
+            #      cd ApiBlog
+            #      dotnet restore
+#
+            ## Construir o projeto
+            #- name: "Construir o projeto"
+            #  run: |
+            #      cd ApiBlog
+            #      dotnet build --configuration Release
+#
+            ## Aplicar as migrations (no próprio GitHub Actions, não no servidor remoto)
+            #- name: "Aplicar Migrations"
+            #  run: |
+            #      cd ApiBlog
+            #      dotnet ef database update
+#
+            ## Carregar a imagem Docker a partir do arquivo .tar no servidor remoto
+            #- name: "Carregar a imagem Docker do arquivo .tar"
+            #  run: |
+            #      sshpass -p "${{ secrets.SFTP_PASSWORD }}" ssh -o StrictHostKeyChecking=no \
+            #      ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }} << 'EOF'
+            #          # Carregar a imagem Docker a partir do arquivo .tar
+            #          sudo docker load -i /var/www/api-back/imagem-api-back/imagem-api-blog.tar
+            #      EOF
+#
+            ## Rodar a imagem Docker no servidor remoto
+            #- name: "Rodar a imagem Docker no servidor remoto"
+            #  run: |
+            #      sshpass -p "${{ secrets.SFTP_PASSWORD }}" ssh -o StrictHostKeyChecking=no \
+            #      ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }} << 'EOF'
+            #          # Rodar o container com a imagem
+            #          sudo docker run -d --name container-api-blog -p 5000:5000 imagem-api-blog
+            #      EOF
