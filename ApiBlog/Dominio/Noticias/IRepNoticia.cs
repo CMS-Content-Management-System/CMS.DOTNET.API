@@ -19,5 +19,7 @@ namespace ApiBlog.Dominio.Noticias
         Task<int> Count(QueryParams? queryParams = null);
         Task<IEnumerable<NoticiaView>> ConsultarPalavraView(string palavra, QueryParams? queryParams = null);
         Task<int> Count(string palavra, QueryParams? queryParams = null);
+        Task<IEnumerable<NoticiaView>> ConsultarPorCategoriaView(Guid idCategoria, QueryParams? queryParams = null);
+        Task<int> Count(Guid idCategoria, QueryParams? queryParams = null);
     }
 }

@@ -129,6 +129,28 @@ namespace ApiBlog.Controllers.Site
             }
         }
 
+        [HttpGet("noticias-por-categoria/{idCategoria}")]
+        public async Task<IActionResult> PesquisarNoticiasPorCategoria(Guid idCategoria, [FromQuery] QueryParams queryParams)
+        {
+            try
+            {
+                var noticias = await _repNoticia.ConsultarPorCategoriaView(idCategoria, queryParams);
+                var total = await _repNoticia.Count(idCategoria, queryParams);
+
+                var ret = new
+                {
+                    Content = noticias,
+                    Total = total
+                };
+
+                return Ok(ret);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
         [HttpGet("noticia/{id}")]
         public async Task<IActionResult> RecuperarNoticia(Guid id)
         {
