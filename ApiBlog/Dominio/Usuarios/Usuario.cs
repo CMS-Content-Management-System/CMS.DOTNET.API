@@ -62,7 +62,7 @@ namespace ApiBlog.Dominio.Usuarios
             if (senha.Trim().Length < 6 || senha.Trim().Length > 10)
                 throw new Exception("A senha deve conter entre 6 e 10 caracteres!");
 
-            Senha = EncriptarSenha(senha.Trim());
+            Senha = senha.Trim();
         }
 
         public void Ativar() => Ativo = true;
