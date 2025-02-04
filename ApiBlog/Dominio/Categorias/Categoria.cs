@@ -6,7 +6,7 @@ namespace ApiBlog.Dominio.Categorias
 {
     public class Categoria : Identificador
     {
-        public Categoria(string descricao)
+        public Categoria(string descricao) 
         {
             AlterarDescricao(descricao);
 
