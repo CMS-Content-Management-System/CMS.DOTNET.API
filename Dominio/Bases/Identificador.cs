@@ -2,6 +2,6 @@
 {
     public abstract class Identificador
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } 
     }
 }
